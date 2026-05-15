@@ -10,6 +10,6 @@ eframe = { version = "*", features = [
 ] }
 
 # For image support:
-egui_extras = { version = "*", features = ["default", "image"] }
+egui_extras = { version = "*", features = ["default", "image", "webp", "gif", "all_loaders"] }
 image = { version = "*", features = ["png"] }
 env_logger = { version = "*", features = ["auto-color", "humantime"] }

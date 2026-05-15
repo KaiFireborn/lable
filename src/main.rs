@@ -5,6 +5,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use eframe::egui;
+use std::path::Path;
 
 fn main() -> eframe::Result {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -44,12 +45,49 @@ fn wide_button(ui: &mut egui::Ui, text: impl Into<egui::WidgetText>, size: egui:
     ui.add_sized(size, egui::Button::new(text))
 }
 
+enum MediaType {
+        ImageGif,
+        Video,
+        Unknown
+    }
+
+fn get_media_filetype(path_in: &str) -> MediaType {
+    
+    let path = Path::new(path_in);
+    let ext = path.extension()
+        .and_then(|s| s.to_str())
+        .map(|s| s.to_lowercase());
+    match ext.as_deref() {
+        Some("jpg") | Some("jpeg") | Some("png") | Some("gif") | Some("webp") | Some("bmp") => {
+            MediaType::ImageGif
+        }
+        Some("mp4") | Some("mkv") | Some("mov") | Some("avi") | Some("webm") => {
+            MediaType::Video
+        }
+        _ => MediaType::Unknown,
+    }
+}
+
+fn draw_media(ui: &mut egui::Ui, path_in: &str) {
+    let filetype = get_media_filetype(path_in);
+
+    let library_abs_path = "/home/kf/Files/Programming/lable";
+    let uri = format!("file://{}/{}", library_abs_path, path_in);
+    // TODO: in the end will actually have absolute paths, but the path still set at runtime and not like that
+    match filetype {
+        MediaType::ImageGif => { ui.add(egui::Image::new(uri)); }
+        _ => { ui.label("Not an image"); }
+    }
+}
+
 impl eframe::App for MyApp {
 
     
 
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
 
+            // let audio_device = egui_video::AudioDevice::new()?;
+    
         egui::CentralPanel::default().show_inside(ui, |ui| {
             egui::Panel::left("left_panel")
                 .min_size(250.0)
@@ -99,7 +137,6 @@ impl eframe::App for MyApp {
                     egui::CentralPanel::default().show_inside(ui, |ui| {
                         ui.label("Image tags");
 
-                      
 
                     });
                 });
@@ -111,10 +148,7 @@ impl eframe::App for MyApp {
                     //     ui.allocate_at_least(egui::vec2(side, side), egui::Sense::hover());
 
                     // ui.painter().rect_filled(rect, 0.0, egui::Color32::GRAY);
-                    ui.add(
-                        egui::Image::new(egui::include_image!("../images/test.png"))
-                            .corner_radius(5),
-                    );
+                    draw_media(ui, "images/test0.png")
                 });
             });
 
