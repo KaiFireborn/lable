@@ -28,15 +28,18 @@ fn main() -> eframe::Result {
 }
 
 struct MyApp {
-    // name: String,
-    // age: u32,
+    selected_index: Option<usize>,
+    is_preview_open: bool,
+    image_paths: Vec<String>,
 }
-
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            // name: "Arthur".to_owned(),
-            // age: 42,
+            selected_index: None,
+            is_preview_open: false,
+            image_paths: (0..8)
+                .map(|i| format!("images/test{}.png", i))
+                .collect::<Vec<_>>(),
         }
     }
 }
